@@ -1,0 +1,19 @@
+services:
+  macds_control_plane:
+    build: .
+    container_name: macds_control_plane
+    ports:
+      - "0.0.0.0:8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=ap-south-1
+    restart: unless-stopped
+    volumes:
+      - ./qtables:/app/qtables
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
